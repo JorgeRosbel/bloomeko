@@ -11,7 +11,8 @@
     "check": "prettier --check .",
     "format": "prettier --write .",
     "prepare": "husky",
-    "build": "pnpm run pre-build && tsx ./scripts/statics.ts"
+    "build": "pnpm run pre-build && tsx ./scripts/statics.ts",
+    "push": "git add . && gitzen commit -y && git push"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx}": [

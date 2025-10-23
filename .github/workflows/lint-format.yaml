@@ -1,0 +1,92 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm run lint
+        env:
+          CI: true
+
+  type-check:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - name: Type Check
+        run: pnpm exec tsc --noEmit
+
+  format:
+    name: Prettier
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - name: Format Check
+        run: pnpm run check
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - name: Check Build
+        run: pnpm run build
